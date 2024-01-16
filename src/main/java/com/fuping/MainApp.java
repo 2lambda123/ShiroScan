@@ -142,13 +142,13 @@ public class MainApp extends Application {
 
 
 //        Service<String> service;
-        stopBtn.setOnAction(event -> {
+        stopBtn.setOnAction_old(event -> {
             if(service!=null){
                 service.cancel();
             }
         });
 
-        startBtn.setOnAction(event -> {
+        startBtn.setOnAction_old(event -> {
 
             if(textField_url.getText().trim().equals("")){
                 showAlert(Alert.AlertType.WARNING, "Warning", "URL can't be empty or the system may not be using the Shiro framework!");
