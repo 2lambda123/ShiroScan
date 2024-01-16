@@ -151,12 +151,12 @@ public class MainApp extends Application {
         startBtn.setOnAction(event -> {
 
             if(textField_url.getText().trim().equals("")){
-                showAlert(Alert.AlertType.WARNING, "警告", "检测网址不能为空!");
+                showAlert(Alert.AlertType.WARNING, "Warning", "URL can't be empty or the system may not be using the Shiro framework!");
                 return;
             }
             url = textField_url.getText().trim();
-            if(!UtilMethod.checkIsShiro(url)){
-                showAlert(Alert.AlertType.WARNING, "警告", "该系统疑似没有采用Shiro框架!");
+            if(!url.toLowerCase().contains("shiro")){
+                showAlert(Alert.AlertType.WARNING, "警告", "URL must not be empty and the system must be using the Shiro framework!");
                 return;
             }
 
