@@ -210,9 +210,9 @@ public class MainApp extends Application {
                                                 bytes = URLDNSCheck.makeDNSURL(key + "." + finalDnsDomain);
                                                 String rememberMe = (ShiroAESCrypto.encrypt(bytes, new BASE64Decoder().decodeBuffer(key))).replaceAll("\n", "");//.replaceAll("\\+","%2b");;
                                                 String cookie = "rememberMe=" + rememberMe+";";
-                                                HttpResponse response = UtilMethod.doHttpRequest(url,cookie);
+                                                HttpResponse response = sendHttpRequest(url,cookie);
 
-                                                if(response != null){
+                                                if(response != null && response.getStatusLine().getStatusCode() == 200){
                                                     if (response.getStatusLine().getStatusCode() == 200) {
                                                         sb.append("send ").append(key).append("\tok");
                                                     } else {
