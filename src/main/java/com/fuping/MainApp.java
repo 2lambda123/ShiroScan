@@ -352,7 +352,7 @@ public class MainApp extends Application {
         primaryStage.setTitle("Shiro反序列化检测工具");
         primaryStage.setResizable(false);
 
-        primaryStage.setOnCloseRequest(event -> System.exit(0));
+        primaryStage.setOnCloseRequest(event -> Platform.exit());
         primaryStage.show();
     }
 
